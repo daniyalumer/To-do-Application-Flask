@@ -8,7 +8,7 @@ WORKDIR /app
 COPY requirements.txt /app/
 
 # installing dependencies from requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # copy rest of application to pwd
 COPY . /app
