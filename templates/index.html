@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List App</title>
+</head>
+<body>
+    <h1>To-Do List App</h1>
+
+    <!-- Form for creating a new to-do item -->
+    <form action="/todo" method="post">
+        <input type="text" name="description" placeholder="Enter to-do description" required>
+        <button type="submit">Add To-Do</button>
+    </form>
+
+    <h2>To-Do Items</h2>
+    <div>
+        {% for todo in todos if not todo.completed %}
+        <div>
+            <form action="/completed/{{ todo.id }}" method="post">
+                <input type="checkbox" onclick="this.form.submit()">
+                <label>{{ todo.description }} - Created: {{ todo.date_created }} - Updated: {{ todo.date_updated }} - ID: {{ todo.id }}</label>
+            </form>
+            <!-- Form to update the to-do item -->
+            <form action="/todo" method="post">
+                <input type="hidden" name="id" value="{{ todo.id }}">
+                <input type="text" name="description" placeholder="Update description" value="{{ todo.description }}" required>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>Completed Items</h2>
+    <div>
+        {% for todo in todos if todo.completed %}
+        <div>
+            <p>{{ todo.description }} - Created: {{ todo.date_created }} - Updated: {{ todo.date_updated }} - Completed: {{ todo.date_completed }} - ID: {{ todo.id }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
