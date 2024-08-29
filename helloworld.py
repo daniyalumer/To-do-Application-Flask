@@ -23,9 +23,10 @@ def create_or_update_todo():
     if id:
         for todo in todo_list:
             if id == todo['id']:
+                todo['id']=generatehash(description)
                 todo['description']=description
                 todo['dateupdated']=currenttime
-                return jsonify({'message': f'item {id} updated successfully', 'todo': todo}), 200
+                return redirect(url_for('home'))
             return jsonify({'error': 'Todo item not found'}), 404
     #create item
     else:
@@ -43,7 +44,7 @@ def create_or_update_todo():
             'completed': False
         }
         todo_list.append(new_todo_item)
-        return jsonify({'message': 'New item created in to do list', 'todo': new_todo_item}), 201
+        return redirect(url_for('home'))
 
 @app.route('/completed/<string:todo_id>', methods=['POST'])
 def completed_todo_by_id(todo_id):
