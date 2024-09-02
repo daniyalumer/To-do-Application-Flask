@@ -2,43 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>To-Do List App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #212121;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #6a1b9a;
+            text-align: center;
+        }
+        .todo-list {
+            list-style: none;
+            padding: 0;
+        }
+        .todo-item {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            transition: background 0.3s;
+        }
+        .todo-item:hover {
+            background: #f1f1f1;
+        }
+        .todo-item.completed {
+            text-decoration: line-through;
+            color: #aaa;
+        }
+        .todo-details {
+            margin-top: 0.5rem;
+            color: #555;
+        }
+        .todo-description {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .todo-date {
+            font-size: 0.9rem;
+        }
+        .button {
+            background-color: #ab47bc;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        .button:hover {
+            background-color: #9c27b0;
+        }
+        .input-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        input[type="text"] {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 0.5rem;
+            flex-grow: 1;
+        }
+        input[type="submit"] {
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        input[type="submit"]:hover {
+            background-color: #5e35b1;
+        }
+    </style>
 </head>
 <body>
-    <h1>To-Do List App</h1>
-
-    <!-- Form to create a new to-do item -->
-    <form action="/todo" method="post" name="createform">
-        <input type="text" name="description" placeholder="Enter to-do description" required>
-        <button type="submit">Add To-Do</button>
-    </form>
-
-    <h2>To-Do Items</h2>
-    <div>
-        {% for todo in todos if not todo.completed %}
-        <div>
-            <form action="/completed/{{ todo.id }}" method="post">
-                <input type="checkbox" onclick="this.form.submit()">
-                <label>{{ todo.description }} - Created: {{ todo.date_created }} - Updated: {{ todo.date_updated }} - ID: {{ todo.id }}</label>
-            </form>
-            <!-- Form to update the to-do item -->
-            <form action="/todo" method="post" name="updateform">
-                <input type="hidden" name="id" value="{{ todo.id }}">
-                <input type="text" name="description" placeholder="Update description" value="{{ todo.description }}" required>
-                <button type="submit">Update</button>
-            </form>
-        </div>
-        {% endfor %}
+    <div class="container">
+        <h1>To-Do List</h1>
+        <form action="/todo" method="POST">
+            <div class="input-container">
+                <input type="text" name="description" placeholder="Enter your task" required>
+                <input type="submit" value="Add Task">
+            </div>
+        </form>
+        <ul class="todo-list">
+            {% for todo in todos %}
+            <li class="todo-item {% if todo.completed %}completed{% endif %}">
+                <div class="todo-description">{{ todo.description }}</div>
+                <div class="todo-details">
+                    <div class="todo-date">Created: {{ todo.date_created }}</div>
+                    <div class="todo-date">Updated: {{ todo.date_updated }}</div>
+                    {% if todo.date_completed %}
+                    <div class="todo-date">Completed: {{ todo.date_completed }}</div>
+                    {% endif %}
+                </div>
+                <form action="/todo" method="POST" style="display: inline;">
+                    <input type="hidden" name="id" value="{{ todo.id }}">
+                    <input type="hidden" name="completed" value="true">
+                    <button type="submit" class="button">Complete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
-
-    <h2>Completed Items</h2>
-    <div>
-        {% for todo in todos if todo.completed %}
-        <div>
-            <p>{{ todo.description }} - Created: {{ todo.date_created }} - Updated: {{ todo.date_updated }} - Completed: {{ todo.date_completed }} - ID: {{ todo.id }}</p>
-        </div>
-        {% endfor %}
-    </div>
-
 </body>
 </html>
